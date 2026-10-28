@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alfajores BBB - Colección</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap');
+    body { font-family: 'Outfit', sans-serif; background-color: #1a0f1d; color: #fff8f0; }
+    .bg-chocolate { background-color: #2A1810; }
+    .bg-caramel { background-color: #C67D33; }
+    .card-gradient { background: linear-gradient(135deg, #3B2219 0%, #2A1810 100%); }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2">
+
+  <div class="w-full max-w-md bg-chocolate border-4 border-amber-900/60 rounded-[2.5rem] shadow-2xl p-4 flex flex-col justify-between relative overflow-hidden min-h-[90vh]">
+    
+    <!-- Header App -->
+    <div>
+      <div class="w-28 h-3 bg-black rounded-b-xl mx-auto mb-3"></div>
+      
+      <div class="bg-black/40 rounded-2xl p-3 flex justify-between items-center border border-white/10 mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-caramel flex items-center justify-center font-bold text-chocolate text-xs">👤</div>
+          <div>
+            <input type="text" id="user-name-input" value="Visitante #1042" onchange="updateUserName(this.value)" 
+                   class="bg-transparent text-sm font-bold text-amber-200 border-b border-amber-500/30 focus:outline-none focus:border-caramel w-32">
+            <p class="text-[10px] text-emerald-400 font-semibold">● Participando en Sorteo</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-amber-100/60">Colección</p>
+          <p class="text-xs font-black text-amber-300" id="collection-count">0 / 4 Alfajores</p>
+        </div>
+      </div>
+
+      <!-- Nav Tabs -->
+      <div class="flex bg-black/50 p-1 rounded-xl mb-3 border border-white/5 text-xs">
+        <button onclick="switchAppTab('collection')" id="app-tab-coll" class="flex-1 py-1.5 rounded-lg bg-caramel text-chocolate font-bold">🎒 Mi Colección</button>
+        <button onclick="switchAppTab('scanner')" id="app-tab-scan" class="flex-1 py-1.5 rounded-lg text-amber-200 font-bold hover:bg-white/5">📷 Escanear</button>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="flex-1 overflow-y-auto my-2">
+      <!-- VISTA COLECCION -->
+      <div id="app-sub-collection" class="space-y-3">
+        <div class="text-center">
+          <h3 class="font-extrabold text-amber-100">Colección de Alfajores BBB</h3>
+          <p class="text-xs text-amber-200/60">Escanéa los empaques exhibidos</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5" id="collection-grid"></div>
+      </div>
+
+      <!-- VISTA ESCANER -->
+      <div id="app-sub-scanner" class="hidden space-y-3 flex flex-col items-center">
+        <div class="text-center">
+          <h3 class="font-extrabold text-amber-100">Escáner de Empaques</h3>
+          <p class="text-xs text-amber-200/60">Simulá el escaneo seleccionando la imagen</p>
+        </div>
+
+        <div id="scan-feedback" class="hidden w-full p-2.5 rounded-xl text-xs text-center font-bold"></div>
+
+        <div class="w-full bg-black/30 p-3 rounded-2xl border border-white/10 space-y-2">
+          <p class="text-[10px] font-bold text-amber-300 text-center uppercase tracking-wider">Presiona para simular escaneo:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="processScannedItem('verity')" class="p-2 bg-amber-900/40 hover:bg-amber-800/60 border border-amber-500/30 rounded-xl text-[11px] font-semibold text-amber-100 transition text-left">🍪 Verity Vainilla</button>
+            <button onclick="processScannedItem('caramelo')" class="p-2 bg-pink-900/40 hover:bg-pink-800/60 border border-pink-500/30 rounded-xl text-[11px] font-semibold text-pink-100 transition text-left">🍬 Caramelo 67</button>
+            <button onclick="processScannedItem('3xt')" class="p-2 bg-amber-950/40 hover:bg-amber-800/60 border border-amber-600/30 rounded-xl text-[11px] font-semibold text-amber-200 transition text-left">🍫 BBB 3xT</button>
+            <button onclick="processScannedItem('aura')" class="p-2 bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/30 rounded-xl text-[11px] font-semibold text-purple-100 transition text-left">✨ Aura Galáctica</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-2 border-t border-white/10 text-center">
+      <p class="text-[10px] text-amber-100/40">Alfajores BBB © Expo 2026</p>
+    </div>
+
+  </div>
+
+  <script>
+    const PACKAGING_DB = {
+      'verity': { name: 'Verity Vainilla', image: 'http://googleusercontent.com/lmdx_content/pwOFASkmtpUOwLUdxBBZwsioiPNNPNYlreohTamuYkTaOjyHbxAYDhzIqhKpRtTJZEAIqxZdAoVaXDLjLZlWkyzDBgKuUFVqWbpOQYvUKWyNCXuuDCIOvGFHzMdNWdpjWFcNuJojkIqRfatgVXstkFsdNswChTIRljaNI35254' },
+      'caramelo': { name: 'Caramelo Pink 67', image: 'http://googleusercontent.com/lmdx_content/rLVDoEuXOAZxxmPOPclymqWGZDrhMonqhVtzQhjsIKHcQQrfAUZrlvJQEozGVHynUjlQdNIHygeEaGZpcPVZgKRdZCNOPNxSXIQThmaCxxnUVYqgQALAFgTNbHrYsgbtNZQACDlJFwHwdvyOoyYUAYfOiNsXrSphiDwZAyasyBcPGJnZrGPlaqBuPmItt35250' },
+      '3xt': { name: 'BBB 3xT Triple', image: 'http://googleusercontent.com/image_generation_content/4_626' },
+      'aura': { name: 'Aura Galáctica', image: 'http://googleusercontent.com/image_generation_content/9_630' }
+    };
+
+    let currentUser = { name: 'Visitante #' + Math.floor(1000 + Math.random() * 9000), collection: [] };
+
+    function switchAppTab(tab) {
+      document.getElementById('app-sub-collection').classList.toggle('hidden', tab !== 'collection');
+      document.getElementById('app-sub-scanner').classList.toggle('hidden', tab !== 'scanner');
+      document.getElementById('app-tab-coll').className = tab === 'collection' ? "flex-1 py-1.5 rounded-lg bg-caramel text-chocolate font-bold" : "flex-1 py-1.5 rounded-lg text-amber-200 font-bold hover:bg-white/5";
+      document.getElementById('app-tab-scan').className = tab === 'scanner' ? "flex-1 py-1.5 rounded-lg bg-caramel text-chocolate font-bold" : "flex-1 py-1.5 rounded-lg text-amber-200 font-bold hover:bg-white/5";
+    }
+
+    function updateUserName(newName) {
+      currentUser.name = newName || 'Visitante Anónimo';
+      saveParticipantData();
+    }
+
+    function renderCollection() {
+      const grid = document.getElementById('collection-grid');
+      grid.innerHTML = '';
+      Object.keys(PACKAGING_DB).forEach(key => {
+        const item = PACKAGING_DB[key];
+        const isCollected = currentUser.collection.includes(key);
+        grid.innerHTML += `
+          <div class="p-2.5 rounded-2xl border ${isCollected ? 'border-caramel/80 bg-black/40' : 'border-white/5 bg-black/20 opacity-40'} flex flex-col items-center text-center relative">
+            <div class="w-full h-20 rounded-xl bg-black/50 overflow-hidden flex items-center justify-center p-1 mb-1">
+              <img src="${item.image}" class="max-h-full object-contain ${isCollected ? '' : 'filter grayscale'}">
+            </div>
+            <h4 class="font-bold text-[11px] text-amber-100">${item.name}</h4>
+          </div>
+        `;
+      });
+      document.getElementById('collection-count').innerText = `${currentUser.collection.length} / 4 Alfajores`;
+    }
+
+    function processScannedItem(itemId) {
+      const feedback = document.getElementById('scan-feedback');
+      feedback.classList.remove('hidden');
+
+      if (currentUser.collection.includes(itemId)) {
+        feedback.className = "w-full p-2.5 rounded-xl text-xs text-center font-bold bg-red-500/20 border border-red-500/50 text-red-300";
+        feedback.innerText = `⚠️ ¡Ya escaneaste "${PACKAGING_DB[itemId].name}"! No se puede repetir.`;
+      } else {
+        currentUser.collection.push(itemId);
+        feedback.className = "w-full p-2.5 rounded-xl text-xs text-center font-bold bg-emerald-500/20 border border-emerald-500/50 text-emerald-300";
+        feedback.innerText = `🎉 ¡"${PACKAGING_DB[itemId].name}" desbloqueado y añadido!`;
+        renderCollection();
+        saveParticipantData();
+      }
+    }
+
+    // Comunicar datos compartidos entre pestañas/páginas mediante localStorage
+    function saveParticipantData() {
+      let participants = JSON.parse(localStorage.getItem('bbb_participants') || '[]');
+      let index = participants.findIndex(p => p.id === currentUser.name || p.id === currentUser.originalId);
+      
+      if (index !== -1) {
+        participants[index] = { id: currentUser.name, name: currentUser.name, count: currentUser.collection.length };
+      } else {
+        participants.push({ id: currentUser.name, name: currentUser.name, count: currentUser.collection.length });
+      }
+      
+      localStorage.setItem('bbb_participants', JSON.stringify(participants));
+    }
+
+    window.addEventListener('load', () => {
+      document.getElementById('user-name-input').value = currentUser.name;
+      renderCollection();
+      saveParticipantData();
+    });
+  </script>
+</body>
+</html>
